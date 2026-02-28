@@ -1,0 +1,18 @@
+[Default Applications]
+x-scheme-handler/http=firefox-esr.desktop
+x-scheme-handler/https=firefox-esr.desktop
+x-scheme-handler/about=firefox-esr.desktop
+text/html=firefox-esr.desktop
+inode/directory=thunar.desktop
+text/plain=emacs.desktop
+text/x-csrc=emacs.desktop
+text/x-python=emacs.desktop
+application/pdf=org.pwmt.zathura.desktop
+image/jpeg=feh.desktop
+image/png=feh.desktop
+image/gif=feh.desktop
+application/json=emacs.desktop
+text/markdown=emacs.desktop
+text/xml=emacs.desktop
+text/csv=emacs.desktop
+

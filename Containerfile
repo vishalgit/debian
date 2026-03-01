@@ -305,8 +305,8 @@ RUN echo "PATH=${PATH}" >> /etc/environment
 # Setup themes thunar rofi xterm
 USER ${user}
 WORKDIR ${homedir}
-mkdir -p ${XDG_CONFIG_DIR}/rofi && \
-echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi && \
+RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
+echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
 
 USER root
 WORKDIR /root

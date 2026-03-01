@@ -134,7 +134,7 @@ RUN mise use -g github:neovide/neovide && mkdir -p ${XDG_CONFIG_DIR}/neovide
 COPY --chown=${user}:${group} neovide.toml ${XDG_CONFIG_DIR}/neovide/config.toml
 
 # Setup claude
-RUN curl -fsSL https://claude.ai/install.sh | bash
+RUN curl -fsSL http://claude.ai/install.sh | bash
 
 # Setup neovim
 ENV SHELL=/bin/zsh

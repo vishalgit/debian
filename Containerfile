@@ -249,7 +249,6 @@ xdg-utils \
 firefox-esr \
 zathura \
 zathura-pdf-poppler \
-xsettingsd \
 openssh-server && \
 rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
 mkdir -p /var/run/sshd && \
@@ -306,24 +305,8 @@ RUN echo "PATH=${PATH}" >> /etc/environment
 # Setup themes thunar rofi xterm
 USER ${user}
 WORKDIR ${homedir}
-RUN git clone https://github.com/Fausto-Korpsvart/Gruvbox-GTK-Theme.git && \
-mkdir -p ${homedir}/.themes && \
-cp -r Gruvbox-GTK-Theme/themes/* ${homedir}/.themes/ && \
-mkdir -p ${XDG_CONFIG_DIR}/gtk-3.0 && \
-cat <<EOF > ${XDG_CONFIG_DIR}/gtk-3.0/settings.ini
-[Settings]
-gtk-theme-name=Gruvbox-Dark
-gtk-application-prefer-dark-theme=true
-EOF
-RUN echo 'gtk-theme-name="Gruvbox-Dark"' > ${homedir}/.gtkrc-2.0 && \
 mkdir -p ${XDG_CONFIG_DIR}/rofi && \
 echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi && \
-rm -rf Gruvbox-GTK-Theme
-RUN cat <<EOF > ${homedir}/.xsettingsd
-Net/ThemeName "Gruvbox-Dark"
-Net/IconThemeName "Adwaita"
-Gtk/CursorThemeName "Adwaita"
-EOF
 
 USER root
 WORKDIR /root

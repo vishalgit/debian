@@ -3,5 +3,4 @@ xrdb -merge ~/.Xresources
 set -a; source /etc/environment; set +a
 picom &
 dunst &
-xsettingsd &
 exec dbus-run-session -- i3

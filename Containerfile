@@ -249,7 +249,8 @@ xdg-utils \
 firefox-esr \
 zathura \
 zathura-pdf-poppler \
-openssh-server
+openssh-server \
+libnss3-tools
 
 RUN mkdir -p /var/run/sshd && \
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
@@ -262,6 +263,9 @@ mkdir -p /var/run/xrdp /var/log/xrdp && \
 chmod 755 /var/run/xrdp /var/log/xrdp && \
 sed -i 's/^UsePrivilegeSeparation=.*/UsePrivilegeSeparation=false/' /etc/xrdp/sesman.ini
 COPY start-xrdp.sh /usr/local/bin/start-xrdp.sh
+RUN mkdir -p /home/${user}/.pki/nssdb && \
+certutil -d sql:/home/${user}/.pki/nssdb -N --empty-password && \
+certutil -d sql:/home/${user}/.pki/nssdb -A -t "C,," -n "VishalCert" -i /home/${user}/.certs/cert.crt 
 RUN chmod +x /usr/local/bin/start-xrdp.sh && \
 mkdir -p /usr/lib/firefox-esr/distribution && \
 cat <<'EOF' > /usr/lib/firefox-esr/distribution/policies.json

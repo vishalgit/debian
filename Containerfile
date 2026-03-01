@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM debian:trixie
 USER root
 WORKDIR /root
@@ -10,17 +11,20 @@ ENV TZ=Asia/Kolkata
 # Switch to HTTP for corp cert installation
 RUN sed -i 's|https://|http://|g' /etc/apt/sources.list.d/debian.sources
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+--mount=type=cache,target=/var/lib/apt,sharing=locked \
+apt-get update && apt-get install -y --no-install-recommends \
 nala \
-ca-certificates && \
-rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+ca-certificates
 
 COPY cert.crt /usr/local/share/ca-certificates/cert.crt
 RUN chmod 644 /usr/local/share/ca-certificates/cert.crt && \
 update-ca-certificates && \
 sed -i 's|http://|https://|g' /etc/apt/sources.list.d/debian.sources
 
-RUN nala update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+--mount=type=cache,target=/var/lib/apt,sharing=locked \
+nala update && \
 nala install -y --no-install-recommends \
 git \
 gh \
@@ -38,8 +42,7 @@ which \
 ripgrep \
 locales \
 tmux \
-aria2 && \
-rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+aria2
 
 # Setup non root user
 ARG user=vishal
@@ -137,13 +140,14 @@ RUN curl -fsSL https://claude.ai/install.sh | bash
 # Setup neovim
 ENV SHELL=/bin/zsh
 ENV PATH="${homedir}/.local/share/bob/nvim-bin:${PATH}"
-RUN sudo nala update && sudo nala install -y --no-install-recommends \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+--mount=type=cache,target=/var/lib/apt,sharing=locked \
+sudo nala update && sudo nala install -y --no-install-recommends \
 unzip \
 xclip \
 texinfo && \
 curl -fsSL https://raw.githubusercontent.com/MordechaiHadad/bob/master/scripts/install.sh | bash && \
-bob use stable && \
-sudo rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+bob use stable
 
 RUN git clone https://github.com/vishalgit/kickstart.nvim ${XDG_CONFIG_DIR}/kickstart && \
 cd ${XDG_CONFIG_DIR}/kickstart && \
@@ -179,14 +183,15 @@ Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 EOF
 
 # Set up nerdfont
-RUN sudo nala update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+--mount=type=cache,target=/var/lib/apt,sharing=locked \
+sudo nala update && \
 sudo nala install -y --no-install-recommends \
 fonts-symbola \
 emacs \
 pandoc \
 shellcheck \
 fontconfig && \
-sudo rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
 mkdir -p ${homedir}/.fonts && \
 wget -q --show-progress https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.tar.xz -O ${homedir}/JetBrainsMono.tar.xz && \
 wget -q --show-progress https://github.com/ryanoasis/nerd-fonts/releases/latest/download/NerdFontsSymbolsOnly.tar.xz -O ${homedir}/NerdFontsSymbolsOnly.tar.xz && \
@@ -205,40 +210,36 @@ ENV PATH="${XDG_CONFIG_DIR}/emacs/bin:${PATH}"
 # Setup GUI
 RUN mkdir -p ${XDG_CONFIG_DIR}/i3 \
 ${XDG_CONFIG_DIR}/i3status \
-${XDG_CONFIG_DIR}/neovide \
-${homedir}/wallpapers
+${XDG_CONFIG_DIR}/neovide
 COPY --chown=${user}:${group} i3.config ${XDG_CONFIG_DIR}/i3/config
 COPY --chown=${user}:${group} i3status.config ${XDG_CONFIG_DIR}/i3status/config
 COPY --chown=${user}:${group} i3_start ${homedir}/.xsession
-COPY --chown=${user}:${group} milkyway.jpg ${homedir}/wallpapers/milkyway.jpg
 COPY --chown=${user}:${group} Xresources ${homedir}/.Xresources
 COPY --chown=${user}:${group} mimeapps.list ${XDG_CONFIG_DIR}/mimeapps.list
 RUN chmod +x ${homedir}/.xsession
+RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
+echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
 
 ENV BROWSER=firefox-esr
 ENV EDITOR=nvim
 ENV VISUAL=nvim
 ENV TERMINAL=xterm
 ENV FILE_MANAGER=thunar
-ENV GTK_THEME=Gruvbox-Dark
 USER root
 WORKDIR /root
-RUN nala update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+--mount=type=cache,target=/var/lib/apt,sharing=locked \
+nala update && \
 nala install -y --no-install-recommends \
 xrdp \
 xorg \
 xorgxrdp \
 i3-wm \
 i3status \
-i3lock \
 rofi \
 dbus-x11 \
 tini \
 xterm \
-picom \
-feh \
-dunst \
-dex \
 luit \
 tumbler \
 thunar \
@@ -249,12 +250,15 @@ xdg-utils \
 firefox-esr \
 zathura \
 zathura-pdf-poppler \
-openssh-server && \
-rm -rf /var/cache/apt/archives /var/lib/apt/lists/* && \
-mkdir -p /var/run/sshd && \
+openssh-server
+
+RUN mkdir -p /var/run/sshd && \
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
 sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config && \
 sed -i 's/^#EnableFuseMount=.*/EnableFuseMount=false/' /etc/xrdp/sesman.ini && \
+sed -i 's/^max_bpp=32/max_bpp=16/' /etc/xrdp/xrdp.ini && \
+sed -i 's/^crypt_level=high/crypt_level=none/' /etc/xrdp/xrdp.ini && \
+sed -i '/^\[Globals\]/a use_client_res=true' /etc/xrdp/xrdp.ini && \
 mkdir -p /var/run/xrdp /var/log/xrdp && \
 chmod 755 /var/run/xrdp /var/log/xrdp && \
 sed -i 's/^UsePrivilegeSeparation=.*/UsePrivilegeSeparation=false/' /etc/xrdp/sesman.ini
@@ -299,17 +303,8 @@ EDITOR=nvim
 VISUAL=nvim
 TERMINAL=xterm
 FILE_MANAGER=thunar
-GTK_THEME=Gruvbox-Dark
 EOF
 RUN echo "PATH=${PATH}" >> /etc/environment
-# Setup themes thunar rofi xterm
-USER ${user}
-WORKDIR ${homedir}
-RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
-echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
-
-USER root
-WORKDIR /root
 
 EXPOSE 3389
 EXPOSE 22

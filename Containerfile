@@ -7,6 +7,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV TZ=Asia/Kolkata
+ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 
 # Switch to HTTP for corp cert installation
 RUN sed -i 's|https://|http://|g' /etc/apt/sources.list.d/debian.sources
@@ -15,12 +17,13 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/lib/apt,sharing=locked \
 apt-get update && apt-get install -y --no-install-recommends \
 nala \
-ca-certificates
+ca-certificates \
+locales
 
-COPY cert.crt /usr/local/share/ca-certificates/cert.crt
-RUN chmod 644 /usr/local/share/ca-certificates/cert.crt && \
-update-ca-certificates && \
-sed -i 's|http://|https://|g' /etc/apt/sources.list.d/debian.sources
+COPY cert.crt /usr/local/share/ca-certificates/
+RUN update-ca-certificates
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+locale-gen en_US.UTF-8
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -31,7 +34,6 @@ gh \
 wget \
 gnupg2 \
 apt-transport-https \
-ca-certificates \
 curl \
 zsh \
 build-essential \
@@ -40,7 +42,6 @@ fd-find \
 locate \
 which \
 ripgrep \
-locales \
 tmux \
 aria2
 
@@ -60,9 +61,7 @@ chmod 0440 /etc/sudoers.d/${user} && \
 echo "${user}:${user}" | chpasswd && \
 mkdir -p /run/user/${uid} && \
 chown ${user}:${group} /run/user/${uid} && \
-chmod 0700 /run/user/${uid} && \
-sed -i '/en_US.UTF-8/s/^# //' /etc/locale.gen && \
-locale-gen
+chmod 0700 /run/user/${uid}
 ENV XDG_RUNTIME_DIR=/run/user/${uid}
 ENV XDG_CONFIG_DIR=${homedir}/.config
 
@@ -175,7 +174,7 @@ EOF
 # Setup backports
 RUN sudo tee /etc/apt/sources.list.d/debian-backports.sources << EOF
 Types: deb deb-src
-URIs: https://deb.debian.org/debian
+URIs: http://deb.debian.org/debian
 Suites: trixie-backports
 Components: main contrib non-free non-free-firmware
 Enabled: yes

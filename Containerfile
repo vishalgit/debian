@@ -134,8 +134,7 @@ RUN mise use -g github:neovide/neovide && mkdir -p ${XDG_CONFIG_DIR}/neovide
 COPY --chown=${user}:${group} neovide.toml ${XDG_CONFIG_DIR}/neovide/config.toml
 
 # Setup claude
-RUN curl -fsSL http://claude.ai/install.sh | bash
-
+RUN mise use -g aqua:anthropics/claude-code 
 # Setup neovim
 ENV SHELL=/bin/zsh
 ENV PATH="${homedir}/.local/share/bob/nvim-bin:${PATH}"
@@ -172,7 +171,7 @@ chmod u+x ${homedir}/.local/bin/kata
 EOF
 
 # Setup backports
-RUN sudo tee /etc/apt/sources.list.d/debian-backports.sources << EOF
+RUN sudo tee /etc/apt/sources.list.d/debian-backports.sources <<'EOF'
 Types: deb deb-src
 URIs: http://deb.debian.org/debian
 Suites: trixie-backports

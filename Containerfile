@@ -255,7 +255,7 @@ RUN mkdir -p /var/run/sshd && \
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
 sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config && \
 sed -i 's/^#EnableFuseMount=.*/EnableFuseMount=false/' /etc/xrdp/sesman.ini && \
-sed -i 's/^max_bpp=32/max_bpp=16/' /etc/xrdp/xrdp.ini && \
+sed -i 's/^max_bpp=32/max_bpp=24/' /etc/xrdp/xrdp.ini && \
 sed -i 's/^crypt_level=high/crypt_level=none/' /etc/xrdp/xrdp.ini && \
 sed -i '/^\[Globals\]/a use_client_res=true' /etc/xrdp/xrdp.ini && \
 mkdir -p /var/run/xrdp /var/log/xrdp && \

@@ -292,7 +292,7 @@ cat <<'EOF' > /usr/lib/firefox-esr/distribution/policies.json
   }
 }
 EOF
-RUN tee /etc/environment << 'EOF'
+RUN tee /etc/environment <<'EOF'
 DEBIAN_FRONTEND=noninteractive
 LANG=en_US.UTF-8
 LC_ALL=en_US.UTF-8

@@ -1,16 +1,16 @@
 [font]
-size = 14
+size = 18
 hinting = "full"
 edging = "antialias"
 
 [[font.normal]]
-family = "JetBrainsMono Nerd Font Mono"
+family = "JetBrainsMono Nerd Font"
 style = "Medium"
 
 [[font.italic]]
-family = "JetBrainsMono Nerd Font Mono"
+family = "JetBrainsMono Nerd Font"
 style = "MediumItalic"
 
 [[font.bold]]
-family = "JetBrainsMono Nerd Font Mono"
+family = "JetBrainsMono Nerd Font"
 style = "Bold"

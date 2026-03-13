@@ -214,6 +214,7 @@ COPY --chown=${user}:${group} i3status.config ${XDG_CONFIG_DIR}/i3status/config
 COPY --chown=${user}:${group} i3_start ${homedir}/.xsession
 COPY --chown=${user}:${group} Xresources ${homedir}/.Xresources
 COPY --chown=${user}:${group} mimeapps.list ${XDG_CONFIG_DIR}/mimeapps.list
+COPY --chown=${user}:${group} kitty.conf ${XDG_CONFIG_DIR}/kitty/kitty.conf
 RUN chmod +x ${homedir}/.xsession
 RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
 echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
@@ -221,7 +222,8 @@ echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
 ENV BROWSER=firefox-esr
 ENV EDITOR=nvim
 ENV VISUAL=nvim
-ENV TERMINAL=xterm
+ENV TERM=kitty
+ENV COLORTERM=truecolor
 ENV FILE_MANAGER=thunar
 USER root
 WORKDIR /root
@@ -249,7 +251,10 @@ firefox-esr \
 zathura \
 zathura-pdf-poppler \
 openssh-server \
-libnss3-tools
+libnss3-tools \
+dialog \
+feh \
+kitty
 
 RUN mkdir -p /var/run/sshd && \
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \

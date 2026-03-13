@@ -130,8 +130,17 @@ RUN mise use -g aqua:jqlang/jq
 RUN mise use -g aqua:sharkdp/bat
 RUN mise use -g aqua:eth-p/bat-extras
 RUN mise use -g aqua:sxyazi/yazi
+RUN mise use -g aqua:zellij-org/zellij
+RUN mise use -g aqua:ajeetdsouza/zoxide
+RUN mise use -g aqua:helix-editor/helix
+RUN mise use -g aqua:eza-community/eza
+RUN mise use -g core:bun 
 RUN mise use -g github:neovide/neovide && mkdir -p ${XDG_CONFIG_DIR}/neovide
 COPY --chown=${user}:${group} neovide.toml ${XDG_CONFIG_DIR}/neovide/config.toml
+RUN echo "alias ls='eza'" >> ${homedir}/.zshrc && \
+echo "alias ll='eza -l --git --icons'" >> ${homedir}/.zshrc && \
+echo "alias la='eza -la --git --icons'" >> ${homedir}/.zshrc && \
+echo "alias lt='eza --tree --level=2 --icons'" >> ${homedir}/.zshrc
 
 # Setup claude
 RUN mise use -g aqua:anthropics/claude-code 
@@ -208,13 +217,19 @@ ENV PATH="${XDG_CONFIG_DIR}/emacs/bin:${PATH}"
 # Setup GUI
 RUN mkdir -p ${XDG_CONFIG_DIR}/i3 \
 ${XDG_CONFIG_DIR}/i3status \
-${XDG_CONFIG_DIR}/neovide
+${XDG_CONFIG_DIR}/neovide \
+${XDG_CONFIG_DIR}/kitty \
+${XDG_CONFIG_DIR}/gtk-3.0 \
+${homedir}/Pictures
 COPY --chown=${user}:${group} i3.config ${XDG_CONFIG_DIR}/i3/config
 COPY --chown=${user}:${group} i3status.config ${XDG_CONFIG_DIR}/i3status/config
 COPY --chown=${user}:${group} i3_start ${homedir}/.xsession
 COPY --chown=${user}:${group} Xresources ${homedir}/.Xresources
 COPY --chown=${user}:${group} mimeapps.list ${XDG_CONFIG_DIR}/mimeapps.list
 COPY --chown=${user}:${group} kitty.conf ${XDG_CONFIG_DIR}/kitty/kitty.conf
+COPY --chown=${user}:${group} xsettings.ini ${XDG_CONFIG_DIR}/gtk-3.0/settings.ini
+COPY --chown=${user}:${group} xsettingsd ${homedir}/.xsettingsd
+COPY --chown=${user}:${group} milkyway.jpg ${homedir}/Pictures/milkyway.jpg
 RUN chmod +x ${homedir}/.xsession
 RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
 echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
@@ -254,7 +269,10 @@ openssh-server \
 libnss3-tools \
 dialog \
 feh \
-kitty
+kitty \
+arc-theme \
+papirus-icon-theme \
+xsettingsd
 
 RUN mkdir -p /var/run/sshd && \
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
@@ -308,7 +326,8 @@ NODE_EXTRA_CA_CERTS=/home/vishal/.certs/cert.crt
 BROWSER=firefox-esr
 EDITOR=nvim
 VISUAL=nvim
-TERMINAL=xterm
+TERM=kitty
+COLORTERM=truecolor
 FILE_MANAGER=thunar
 EOF
 RUN echo "PATH=${PATH}" >> /etc/environment

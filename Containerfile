@@ -220,7 +220,8 @@ ${XDG_CONFIG_DIR}/i3status \
 ${XDG_CONFIG_DIR}/neovide \
 ${XDG_CONFIG_DIR}/kitty \
 ${XDG_CONFIG_DIR}/gtk-3.0 \
-${homedir}/Pictures
+${homedir}/Pictures \
+${homedir}/.local/share/applications
 COPY --chown=${user}:${group} i3.config ${XDG_CONFIG_DIR}/i3/config
 COPY --chown=${user}:${group} i3status.config ${XDG_CONFIG_DIR}/i3status/config
 COPY --chown=${user}:${group} i3_start ${homedir}/.xsession
@@ -230,6 +231,8 @@ COPY --chown=${user}:${group} kitty.conf ${XDG_CONFIG_DIR}/kitty/kitty.conf
 COPY --chown=${user}:${group} xsettings.ini ${XDG_CONFIG_DIR}/gtk-3.0/settings.ini
 COPY --chown=${user}:${group} xsettingsd ${homedir}/.xsettingsd
 COPY --chown=${user}:${group} milkyway.jpg ${homedir}/Pictures/milkyway.jpg
+COPY --chown=${user}:${group} neovide.png ${homedir}/Pictures/neovide.png
+COPY --chown=${user}:${group} neovide.desktop ${homedir}/.local/share/applications/neovide.desktop
 RUN chmod +x ${homedir}/.xsession
 RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
 echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi

@@ -9,6 +9,7 @@ ENV LC_ALL=en_US.UTF-8
 ENV TZ=Asia/Kolkata
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 ENV SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+ENV PERL_BADLANG=0
 
 # Switch to HTTP for corp cert installation
 RUN sed -i 's|https://|http://|g' /etc/apt/sources.list.d/debian.sources
@@ -23,7 +24,7 @@ locales
 COPY cert.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
-locale-gen en_US.UTF-8
+locale-gen && update-locale LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -117,7 +118,10 @@ RUN mise use -g node@lts \
 npm:npm \
 npm:typescript \
 npm:tree-sitter-cli \
-npm:neovim
+npm:neovim \
+npm:markdownlint-cli2
+RUN cd ${homedir}/.local/share/mise/shims && \
+ln -s markdownlint-cli2 markdownlint
 
 # Setup Rust
 RUN mise use -g rust

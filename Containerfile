@@ -239,7 +239,12 @@ COPY --chown=${user}:${group} neovide.png ${homedir}/Pictures/neovide.png
 COPY --chown=${user}:${group} neovide.desktop ${homedir}/.local/share/applications/neovide.desktop
 RUN chmod +x ${homedir}/.xsession
 RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
-echo '@theme "gruvbox-dark-hard"' > ${XDG_CONFIG_DIR}/rofi/config.rasi
+cat <<'EOF' > ${XDG_CONFIG_DIR}/rofi/config.rasi
+configuration {
+  font: "JetBrainsMono Nerd Font 14";
+}
+@theme "gruvbox-dark-hard"
+EOF
 
 ENV BROWSER=firefox-esr
 ENV EDITOR=nvim

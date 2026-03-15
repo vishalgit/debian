@@ -237,7 +237,8 @@ COPY --chown=${user}:${group} xsettingsd ${homedir}/.xsettingsd
 COPY --chown=${user}:${group} milkyway.jpg ${homedir}/Pictures/milkyway.jpg
 COPY --chown=${user}:${group} neovide.png ${homedir}/Pictures/neovide.png
 COPY --chown=${user}:${group} neovide.desktop ${homedir}/.local/share/applications/neovide.desktop
-RUN chmod +x ${homedir}/.xsession
+COPY --chown=${user}:${group} set-font.sh ${homedir}/.local/bin/set-font.sh
+RUN chmod +x ${homedir}/.xsession ${homedir}/.local/bin/set-font.sh
 RUN mkdir -p ${XDG_CONFIG_DIR}/rofi && \
 cat <<'EOF' > ${XDG_CONFIG_DIR}/rofi/config.rasi
 configuration {

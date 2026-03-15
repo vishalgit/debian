@@ -273,7 +273,6 @@ firefox-esr \
 zathura \
 zathura-pdf-poppler \
 openssh-server \
-libnss3-tools \
 dialog \
 feh \
 kitty \

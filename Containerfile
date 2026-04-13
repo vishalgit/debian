@@ -272,7 +272,7 @@ rofi \
 dbus-x11 \
 tini \
 xterm \
-lxappearence \
+lxappearance \
 luit \
 tumbler \
 thunar \

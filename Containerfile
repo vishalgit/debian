@@ -264,10 +264,15 @@ xorg \
 xorgxrdp \
 i3-wm \
 i3status \
+i3lock \
+picom \
+dunst \
+dex \
 rofi \
 dbus-x11 \
 tini \
 xterm \
+lxappearence \
 luit \
 tumbler \
 thunar \
@@ -284,7 +289,8 @@ feh \
 kitty \
 arc-theme \
 papirus-icon-theme \
-xsettingsd
+xsettingsd \
+xss-lock
 
 RUN mkdir -p /var/run/sshd && \
 sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \

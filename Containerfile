@@ -136,7 +136,6 @@ RUN mise use -g aqua:eth-p/bat-extras
 RUN mise use -g aqua:sxyazi/yazi
 RUN mise use -g aqua:zellij-org/zellij
 RUN mise use -g aqua:ajeetdsouza/zoxide
-RUN mise use -g aqua:helix-editor/helix
 RUN mise use -g aqua:eza-community/eza
 RUN mise use -g core:bun 
 RUN mise use -g github:neovide/neovide && mkdir -p ${XDG_CONFIG_DIR}/neovide
